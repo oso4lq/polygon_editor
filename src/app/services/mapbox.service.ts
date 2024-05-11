@@ -16,17 +16,16 @@ export class MapboxService {
 
   initMap(container: string, accessToken: string) {
     this.map = new mapboxgl.Map({
-      // center: [37.3108581, 55.6939984], // hello to Sk :)
-      center: [-87.61694, 41.86625],
+      center: [37.347365, 55.692203], // hello to Sk :)
+      // center: [-87.61694, 41.86625],
       container: container,
       style: 'mapbox://styles/mapbox/streets-v11',
-      zoom: 16, // zoom index
+      zoom: 12, // zoom index
       pitch: 15, // axis x
       bearing: 15, // axis z
       antialias: true,
       accessToken: accessToken // hardcoded access token
     });
-
     // add polygons to the map
     this.draw = new MapboxDraw({
       displayControlsDefault: false,
@@ -64,27 +63,49 @@ export class MapboxService {
 
       console.log(this.polygons);
       console.log(this.polygons[polygonIndex]);
+
+      const style = this.map.getStyle();
+      console.log(style.sources);
       // Update the map to reflect the changes
-      // this.updateMap();
+      this.updateMap();
     } else {
       console.error('Polygon with ID ' + polygonId + ' not found.'); // Handle error if polygon is not found
     }
   }
 
 
+  updateMap() {
+    if (this.map.getLayer('extruded-polygons')) {
+      this.map.removeLayer('extruded-polygons');
+    }
+    if (this.map.getSource('extruded-polygons')) {
+      this.map.removeSource('extruded-polygons');
+    }
 
-  //     // Get the source for the specified polygon
-  //     // const sourceId = 'polygon-' + (polygonIndex + 1);
-  //     // const source = this.map.getSource(sourceId) as mapboxgl.GeoJSONSource;
-  //     // if (source) {
-  //     //   // Update the polygon layer on the map if the source exists
-  //     //   source.setData(updatedPolygon);
-  //     // } else {
-  //     //   console.error(`Source '${sourceId}' does not exist.`);
-  //     // }
+    // Add a new source using the polygons array
+    this.map.addSource('extruded-polygons', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: this.polygons // Use the polygons array as features
+      }
+    });
 
-  //     console.log(updatedPolygon);
-
+    // Add a new layer to render the extruded polygons
+    this.map.addLayer({
+      id: 'extruded-polygons',
+      type: 'fill-extrusion',
+      source: 'extruded-polygons',
+      paint: {
+        // Get the extrusion color from the properties of each polygon
+        'fill-extrusion-color': '#00ffcc',
+        // Get the extrusion height from the properties of each polygon
+        'fill-extrusion-height': ['get', 'height'],
+        // Set extrusion opacity
+        'fill-extrusion-opacity': 0.8
+      }
+    });
+  };
 
   // user-created polygons
   getPolygons() {
