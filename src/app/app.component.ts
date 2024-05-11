@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.mapboxService.initMap('map-container', environment.mapbox.accessToken);
-    this.mapboxService.startPolygonCreationMode();
+    // this.mapboxService.startPolygonCreationMode();
   }
 
   title = 'Polygon Editor';
