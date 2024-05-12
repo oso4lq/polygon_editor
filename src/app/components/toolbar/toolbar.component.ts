@@ -24,9 +24,12 @@ export class ToolbarComponent {
 
   extrudeHeight: number = 1000; // default extrude height
 
+  // extrude height input
   passExtrudeHeight() {
     this.mapboxService.applyExtrudeHeight(this.extrudeHeight);
   };
+  
+  // toolbar buttons
   zoomIn() {
     this.mapboxService.zoomIn();
   };
@@ -39,5 +42,4 @@ export class ToolbarComponent {
   deleteSelected() {
     this.mapboxService.deleteSelected();
   };
-
 };

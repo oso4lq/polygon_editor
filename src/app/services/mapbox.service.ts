@@ -14,14 +14,15 @@ export class MapboxService {
 
   constructor() { }
 
+  // map initialization
   initMap(container: string, accessToken: string) {
     this.map = new mapboxgl.Map({
       center: [37.347365, 55.692203], // hello to Sk :)
       container: container,
       style: 'mapbox://styles/mapbox/streets-v11',
-      zoom: 12,
-      pitch: 15,
-      bearing: 15,
+      zoom: 12, // zoom index
+      pitch: 0, // axis x
+      bearing: 0, // axis z
       antialias: true,
       accessToken: accessToken
     });
@@ -56,37 +57,34 @@ export class MapboxService {
     });
   };
 
+  // toolbar functions
   zoomIn() {
     this.map.zoomIn();
   };
-  
   zoomOut() {
     this.map.zoomOut();
   };
-
   startDrawing() {
     this.draw.changeMode('draw_polygon');
   };
-
   deleteSelected() {
     const selectedFeatures = this.draw.getSelected();
     if (selectedFeatures.features.length > 0) {
       const selectedFeatureId = selectedFeatures.features[0].id;
       const selectedPolygonIndex = this.polygons.findIndex(polygon => polygon.id === selectedFeatureId);
       if (selectedPolygonIndex !== -1) {
-        // Remove selected polygon from the custom array
         this.polygons.splice(selectedPolygonIndex, 1);
         this.updateMap();
       } else {
         console.error('Selected polygon not found in custom array.');
       }
-      // Delete selected polygon from Mapbox Draw
       this.draw.delete(selectedFeatureId);
     } else {
       console.error('No polygon selected.');
     }
   };
 
+  // extrude height
   applyExtrudeHeight(extrudeHeight: number) {
     const selectedFeatures = this.draw.getSelected();
     if (selectedFeatures.features.length > 0) {
@@ -103,6 +101,7 @@ export class MapboxService {
     }
   };
 
+  // update on each draw event
   updateMap() {
     ['extruded-polygons', 'base-polygons'].forEach(layerId => {
       if (this.map.getLayer(layerId)) {
@@ -127,7 +126,7 @@ export class MapboxService {
         type: layerId === 'extruded-polygons' ? 'fill-extrusion' : 'fill',
         source: layerId,
         paint: {
-          'fill-color': layerId === 'base-polygons' ? '#088' : '#00ffcc',
+          'fill-color': layerId === 'base-polygons' ? '#fcba03' : '#000',
           'fill-opacity': layerId === 'base-polygons' ? 0.6 : 0.8,
           ...(layerId === 'extruded-polygons' && {
             'fill-extrusion-height': ['get', 'height'],

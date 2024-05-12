@@ -1,19 +1,25 @@
 <div class="mapboxDrawControls">
-  <button mat-icon-button (click)="startDrawing()">
-    <mat-icon>add_circle</mat-icon>
-  </button>
-  <button mat-icon-button (click)="deleteSelected()">
-    <mat-icon>delete</mat-icon>
-  </button>
-  <button mat-icon-button (click)="zoomIn()">
+  <h3 class="mapboxDrawControls__title">TOOLBAR</h3>
+
+  <button class="mapboxDrawControls__button" mat-icon-button (click)="zoomIn()">
     <mat-icon>add</mat-icon>
   </button>
-  <button mat-icon-button (click)="zoomOut()">
+  <button class="mapboxDrawControls__button" mat-icon-button (click)="zoomOut()">
     <mat-icon>remove</mat-icon>
   </button>
-  <label class="mapboxDrawControls__extrude">Extrude Height:</label>
-  <input class="mapboxDrawControls__input" type="number" [(ngModel)]="extrudeHeight" placeholder="Extrude Height">
-  <button mat-icon-button (click)="passExtrudeHeight()">
-    <mat-icon>remove</mat-icon>
+
+  <button class="mapboxDrawControls__button" mat-icon-button (click)="startDrawing()">
+    <mat-icon>add_circle</mat-icon>
+  </button>
+  <button class="mapboxDrawControls__button" mat-icon-button (click)="deleteSelected()">
+    <mat-icon>delete</mat-icon>
+  </button>
+
+  <div class="mapboxDrawControls__extrude">
+    <label class="mapboxDrawControls__label">extrude height:</label>
+    <input class="mapboxDrawControls__input" type="number" [(ngModel)]="extrudeHeight" placeholder="Extrude Height">
+  </div>
+  <button class="mapboxDrawControls__button" mat-icon-button (click)="passExtrudeHeight()">
+    <mat-icon>check_circle</mat-icon>
   </button>
 </div>

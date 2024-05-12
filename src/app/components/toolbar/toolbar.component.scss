@@ -1,11 +1,9 @@
 .mapboxDrawControls {
-    margin: 40px 0px;
-    padding: 30px;
+    margin: 20px;
+    padding: 30px 20px;
     display: flex;
     gap: 20px;
     justify-content: flex-start;
-    // width: 100px;
-    // height: 400px;
     position: absolute;
     top: 20px;
     left: 20px;
@@ -13,17 +11,58 @@
     flex-direction: column;
     flex-wrap: wrap;
     align-items: center;
-
-    background: rgb(182, 182, 139);
+    background: rgba(180, 180, 140, 0.5);
     border-radius: 14px;
 
-    &__extrude {
+    &__title {
+        font-size: 24px;
+        margin: 0;
+    }
+
+    &__button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 50px;
         height: 50px;
+        font-size: 30px;
+        border-radius: 10px;
+        cursor: pointer;
+
+        &:hover {
+            background: rgb(255, 255, 255);
+            transition: 0.3s;
+        }
+    }
+
+    &__extrude {
+        display: flex;
+        gap: 6px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    &__label {
+        display: flex;
+        border-radius: 5px;
+        font-size: 16px;
     }
 
     &__input {
-        width: 50px;
-        height: 50px;
+        padding-left: 8px;
+        width: 64px;
+        height: 30px;
+        font-size: 20px;
+        border-radius: 10px;
     }
+}
+
+.mat-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
 }
