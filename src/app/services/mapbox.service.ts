@@ -16,7 +16,7 @@ export class MapboxService {
 
   initMap(container: string, accessToken: string) {
     this.map = new mapboxgl.Map({
-      center: [37.347365, 55.692203],
+      center: [37.347365, 55.692203], // hello to Sk :)
       container: container,
       style: 'mapbox://styles/mapbox/streets-v11',
       zoom: 12,
@@ -28,11 +28,8 @@ export class MapboxService {
 
     this.draw = new MapboxDraw({
       displayControlsDefault: false,
-      controls: {
-        polygon: true,
-        trash: true
-      },
     });
+
     this.map.addControl(this.draw);
 
     this.map.on('draw.create', (event) => {
@@ -51,14 +48,44 @@ export class MapboxService {
       const updatedFeatureId = event.features[0].id;
       const updatedFeatureIndex = this.polygons.findIndex(polygon => polygon.id === updatedFeatureId);
       if (updatedFeatureIndex !== -1) {
-        // Preserve the extrude height
         const extrudeHeight = this.polygons[updatedFeatureIndex].properties.height;
         this.polygons[updatedFeatureIndex] = event.features[0];
         this.polygons[updatedFeatureIndex].properties.height = extrudeHeight;
         this.updateMap();
       }
     });
-  }
+  };
+
+  zoomIn() {
+    this.map.zoomIn();
+  };
+  
+  zoomOut() {
+    this.map.zoomOut();
+  };
+
+  startDrawing() {
+    this.draw.changeMode('draw_polygon');
+  };
+
+  deleteSelected() {
+    const selectedFeatures = this.draw.getSelected();
+    if (selectedFeatures.features.length > 0) {
+      const selectedFeatureId = selectedFeatures.features[0].id;
+      const selectedPolygonIndex = this.polygons.findIndex(polygon => polygon.id === selectedFeatureId);
+      if (selectedPolygonIndex !== -1) {
+        // Remove selected polygon from the custom array
+        this.polygons.splice(selectedPolygonIndex, 1);
+        this.updateMap();
+      } else {
+        console.error('Selected polygon not found in custom array.');
+      }
+      // Delete selected polygon from Mapbox Draw
+      this.draw.delete(selectedFeatureId);
+    } else {
+      console.error('No polygon selected.');
+    }
+  };
 
   applyExtrudeHeight(extrudeHeight: number) {
     const selectedFeatures = this.draw.getSelected();
@@ -110,4 +137,4 @@ export class MapboxService {
       });
     });
   };
-}
+};

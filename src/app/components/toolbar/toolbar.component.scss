@@ -1,0 +1,29 @@
+.mapboxDrawControls {
+    margin: 40px 0px;
+    padding: 30px;
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+    // width: 100px;
+    // height: 400px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+
+    background: rgb(182, 182, 139);
+    border-radius: 14px;
+
+    &__extrude {
+        width: 50px;
+        height: 50px;
+    }
+
+    &__input {
+        width: 50px;
+        height: 50px;
+    }
+}

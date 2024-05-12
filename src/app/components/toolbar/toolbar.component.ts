@@ -1,13 +1,14 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { MapboxService } from '../../services/mapbox.service';
-import { environment } from '../../../environments/environment';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-toolbar',
   standalone: true,
   imports: [
     FormsModule,
+    MatIconModule,
   ],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.scss'
@@ -23,26 +24,20 @@ export class ToolbarComponent {
 
   extrudeHeight: number = 1000; // default extrude height
 
-  setMode(mode: string) {
-    this.modeSelected.emit(mode);
-    console.log(mode + ' mode selected');
-  };
-
   passExtrudeHeight() {
-
     this.mapboxService.applyExtrudeHeight(this.extrudeHeight);
-
-
-    // // Get the array of user-created polygons
-    // const polygons = this.mapboxService.getPolygons();
-    // if (polygons.length > 0) {
-    //   // Get the ID of the last created polygon
-    //   const lastPolygonId = polygons[polygons.length - 1].id;
-    //   this.mapboxService.applyExtrudeHeight(lastPolygonId, this.extrudeHeight);
-    // } else {
-    //   console.error('No polygons created yet.');
-    // }
-  }
-
+  };
+  zoomIn() {
+    this.mapboxService.zoomIn();
+  };
+  zoomOut() {
+    this.mapboxService.zoomOut();
+  };
+  startDrawing() {
+    this.mapboxService.startDrawing();
+  };
+  deleteSelected() {
+    this.mapboxService.deleteSelected();
+  };
 
 };

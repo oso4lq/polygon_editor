@@ -1,11 +1,19 @@
-<div class="toolbar">
-  <button (click)="setMode('create')">Create</button>
-  <button (click)="setMode('delete')">Delete</button>
-  <button (click)="setMode('select')">Select</button>
-  <button (click)="setMode('edit')">Edit Points</button>
-  <button (click)="setMode('move')">Move</button>
-
-  <label>Extrude Height:</label>
-  <input type="number" [(ngModel)]="extrudeHeight" placeholder="Extrude Height">
-  <button (click)="passExtrudeHeight()">Apply</button>
+<div class="mapboxDrawControls">
+  <button mat-icon-button (click)="startDrawing()">
+    <mat-icon>add_circle</mat-icon>
+  </button>
+  <button mat-icon-button (click)="deleteSelected()">
+    <mat-icon>delete</mat-icon>
+  </button>
+  <button mat-icon-button (click)="zoomIn()">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button mat-icon-button (click)="zoomOut()">
+    <mat-icon>remove</mat-icon>
+  </button>
+  <label class="mapboxDrawControls__extrude">Extrude Height:</label>
+  <input class="mapboxDrawControls__input" type="number" [(ngModel)]="extrudeHeight" placeholder="Extrude Height">
+  <button mat-icon-button (click)="passExtrudeHeight()">
+    <mat-icon>remove</mat-icon>
+  </button>
 </div>
