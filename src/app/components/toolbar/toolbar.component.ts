@@ -21,7 +21,7 @@ export class ToolbarComponent {
 
   @Output() modeSelected = new EventEmitter<string>();
 
-  extrudeHeight: number = 10; // default extrude height
+  extrudeHeight: number = 1000; // default extrude height
 
   setMode(mode: string) {
     this.modeSelected.emit(mode);
@@ -29,15 +29,19 @@ export class ToolbarComponent {
   };
 
   applyExtrudeHeight() {
-    // Get the array of user-created polygons
-    const polygons = this.mapboxService.getPolygons();
-    if (polygons.length > 0) {
-      // Get the ID of the last created polygon
-      const lastPolygonId = polygons[polygons.length - 1].id;
-      this.mapboxService.applyExtrudeHeight(lastPolygonId, this.extrudeHeight);
-    } else {
-      console.error('No polygons created yet.');
-    }
+
+    this.mapboxService.applyExtrudeHeight(this.extrudeHeight);
+
+
+    // // Get the array of user-created polygons
+    // const polygons = this.mapboxService.getPolygons();
+    // if (polygons.length > 0) {
+    //   // Get the ID of the last created polygon
+    //   const lastPolygonId = polygons[polygons.length - 1].id;
+    //   this.mapboxService.applyExtrudeHeight(lastPolygonId, this.extrudeHeight);
+    // } else {
+    //   console.error('No polygons created yet.');
+    // }
   }
 
 
