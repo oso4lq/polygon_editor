@@ -28,7 +28,7 @@ export class ToolbarComponent {
     console.log(mode + ' mode selected');
   };
 
-  applyExtrudeHeight() {
+  passExtrudeHeight() {
 
     this.mapboxService.applyExtrudeHeight(this.extrudeHeight);
 

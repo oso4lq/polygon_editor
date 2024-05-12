@@ -1,5 +1,3 @@
-// mapbox.service.ts
-
 import { Injectable } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
@@ -7,10 +5,12 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 @Injectable({
   providedIn: 'root'
 })
+
 export class MapboxService {
   //@ts-ignore
   private map: mapboxgl.Map;
   private draw: MapboxDraw;
+  private polygons: any[] = [];
 
   constructor() { }
 
@@ -37,32 +37,46 @@ export class MapboxService {
 
     this.map.on('draw.create', (event) => {
       const newPolygon = event.features[0];
+      this.polygons.push(newPolygon);
       this.updateMap();
     });
 
     this.map.on('draw.delete', (event) => {
+      const deletedFeatureId = event.features[0].id;
+      this.polygons = this.polygons.filter(polygon => polygon.id !== deletedFeatureId);
       this.updateMap();
     });
 
     this.map.on('draw.update', (event) => {
-      this.updateMap();
+      const updatedFeatureId = event.features[0].id;
+      const updatedFeatureIndex = this.polygons.findIndex(polygon => polygon.id === updatedFeatureId);
+      if (updatedFeatureIndex !== -1) {
+        // Preserve the extrude height
+        const extrudeHeight = this.polygons[updatedFeatureIndex].properties.height;
+        this.polygons[updatedFeatureIndex] = event.features[0];
+        this.polygons[updatedFeatureIndex].properties.height = extrudeHeight;
+        this.updateMap();
+      }
     });
   }
 
   applyExtrudeHeight(extrudeHeight: number) {
-    const selectedFeatures = this.draw.getAll();
+    const selectedFeatures = this.draw.getSelected();
     if (selectedFeatures.features.length > 0) {
-      selectedFeatures.features.forEach((feature: { properties: { height: number; }; }) => {
-        feature.properties.height = extrudeHeight;
-      });
-      this.updateMap();
+      const selectedFeatureId = selectedFeatures.features[0].id;
+      const selectedPolygon = this.polygons.find(polygon => polygon.id === selectedFeatureId);
+      if (selectedPolygon) {
+        selectedPolygon.properties.height = extrudeHeight;
+        this.updateMap();
+      } else {
+        console.error('Selected polygon not found in custom array.');
+      }
     } else {
       console.error('No polygons selected.');
     }
-  }
+  };
 
   updateMap() {
-    // Remove existing layers
     ['extruded-polygons', 'base-polygons'].forEach(layerId => {
       if (this.map.getLayer(layerId)) {
         this.map.removeLayer(layerId);
@@ -72,14 +86,13 @@ export class MapboxService {
       }
     });
 
-    // Get the GeoJSON data from Mapbox Draw
-    const data = this.draw.getAll();
-
-    // Add source and layers for both base and extruded polygons
     ['base-polygons', 'extruded-polygons'].forEach(layerId => {
       this.map.addSource(layerId, {
         type: 'geojson',
-        data: data
+        data: {
+          type: 'FeatureCollection',
+          features: this.polygons
+        }
       });
 
       this.map.addLayer({
@@ -87,13 +100,14 @@ export class MapboxService {
         type: layerId === 'extruded-polygons' ? 'fill-extrusion' : 'fill',
         source: layerId,
         paint: {
-          'fill-color': '#088',
-          'fill-opacity': layerId === 'extruded-polygons' ? 0.8 : 0.6,
-          'fill-extrusion-color': '#00ffcc',
-          'fill-extrusion-height': ['get', 'height'],
-          'fill-extrusion-opacity': 0.6
-        } as any
+          'fill-color': layerId === 'base-polygons' ? '#088' : '#00ffcc',
+          'fill-opacity': layerId === 'base-polygons' ? 0.6 : 0.8,
+          ...(layerId === 'extruded-polygons' && {
+            'fill-extrusion-height': ['get', 'height'],
+            'fill-extrusion-opacity': 0.6
+          }) as any
+        }
       });
     });
-  }
+  };
 }
